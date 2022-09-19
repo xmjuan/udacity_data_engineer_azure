@@ -1,4 +1,3 @@
-
 --- used method from https://datasavvy.me/2016/08/06/create-a-date-dimension-in-azure-sql-data-warehouse/
 
 DECLARE @StartDate DATE = '20100101', @NumberOfYears INT = 30;
@@ -10,7 +9,8 @@ CREATE TABLE dim_calendar (
     [date] date,  
     [month] int,
     [quarter] int,
-    [year] int
+    [year] int,
+    CONSTRAINT PK_dim_calendar_date PRIMARY KEY NONCLUSTERED ([date]) NOT ENFORCED
 );
 
 SET DATEFIRST 7;

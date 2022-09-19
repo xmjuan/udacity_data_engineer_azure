@@ -5,7 +5,10 @@ CREATE TABLE fact_trip (
 	[start_station_id] nvarchar(4000),
 	[end_station_id] nvarchar(4000),
 	[rider_id] bigint,
-    [rider_age] bigint
+    [rider_age] bigint,
+    [started_at] datetime,
+    [ended_at] datetime,
+    CONSTRAINT PK_fact_trip_trip_id PRIMARY KEY NONCLUSTERED ([trip_id]) NOT ENFORCED
 	)
 
 GO
@@ -17,12 +20,11 @@ WITH tab1 AS
 	[rideable_trip],
 	TRY_CONVERT(datetime, [started_at]) AS [started_at],
     TRY_CONVERT(datetime, [ended_at]) AS [ended_at],
-    TRY_CONVERT(date, [ended_at]) AS [ended_at_date],
     TRY_CONVERT(bigint, DATEDIFF(second,[started_at],[ended_at])) AS [duration],
 	[start_station_id],
 	[end_station_id],
 	s.[member_id] AS [rider_id],
-    DATEDIFF(month, r.[birthday], GETDATE())/12 AS [rider_age]
+    DATEDIFF(month, r.[birthday], [started_at])/12 AS [rider_age]
 FROM staging_trip s
 JOIN dim_rider r ON s.member_id = r.rider_id
 )
@@ -35,7 +37,9 @@ INSERT INTO fact_trip (
 	[start_station_id],
 	[end_station_id],
 	[rider_id],
-    [rider_age]
+    [rider_age],
+    [started_at],
+    [ended_at]
 )
 SELECT 
     [trip_id],
@@ -44,10 +48,11 @@ SELECT
 	[start_station_id],
 	[end_station_id],
 	[rider_id],
-    [rider_age]
+    [rider_age],
+    [started_at],
+    [ended_at]
 FROM tab1
 
 GO
 
 SELECT TOP 100 * FROM fact_trip
-

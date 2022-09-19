@@ -2,7 +2,8 @@ CREATE TABLE fact_payment (
     [payment_id] bigint,
 	[payment_date] date,
 	[amount] float,
-	[rider_id] bigint
+	[rider_id] bigint,
+    CONSTRAINT PK_fact_payment_payment_id PRIMARY KEY NONCLUSTERED ([payment_id]) NOT ENFORCED
 )
 
 GO
